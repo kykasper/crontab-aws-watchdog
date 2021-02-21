@@ -8,6 +8,8 @@ Cloudformationで作成したいけど、CloudWatchEventsの部分が面倒く�
 
 ## 構成図
 
+![crontab-aws-watchdog-image](image/crontab-aws-watchdog-image.png)
+
 # AWS Lambda
 
 ## 関数
