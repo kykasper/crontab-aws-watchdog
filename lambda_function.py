@@ -1,7 +1,8 @@
 import json
+import os
 import boto3
 
-TOPIC_ARN = 'arn:aws:sns:ap-northeast-1:953626632882:alert-notification'
+TOPIC_ARN = os.environ['SNS_TOPIC_ARN']
 subject = 'TestWatchdog'
 client = boto3.client('sns')
 

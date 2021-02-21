@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  alert crontab result, and monitoring crontab
+
+Parameters:
+  NortificationMail:
+    Description: email adress for nortification
+    Type: String
+
+Resources:
+
+  HeartbeatNotification:
+      Type: AWS::SNS::Topic
+      Properties:
+          DisplayName: HeartbeatNotification
+          Subscription:
+              - Endpoint: !GetAtt JudgeResultLambda.Arn
+                Protocol: lambda
+          TopicName: HeartbeatNotification
+
+  JudgeResultLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: cloudwatchlogsPut
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+            - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              Resource: "*"
+              Effect: Allow
+        - PolicyName: snspublish
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+            - Action:
+              - sns:Publish
+              Resource: "*"
+              Effect: Allow
+
+  JudgeResultLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: judge_result
+      Role: !GetAtt JudgeResultLambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 300
+      Handler: lambda_function.lambda_handler
+      CodeUri: s3://crontab-aws-watchdog/lambda_function.zip
+      Environment:
+        # AWS Lambda environment variables
+        Variables:
+          SNS_TOPIC_ARN: !Ref AlarmNotification
+
+  EventsInvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JudgeResultLambda
+      Action: lambda:InvokeFunction
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref HeartbeatNotification
+
+
+  AlarmNotification:  # AWSServiceErrorNotification
+      Type: AWS::SNS::Topic
+      Properties:
+          DisplayName: AlarmNotification
+          Subscription:
+              - Endpoint:
+                  Ref: NortificationMail
+                Protocol: email
+          TopicName: AlarmNotification
+  
+  WatchdogAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties: 
+      AlarmActions: 
+        - !Ref AlarmNotification
+      AlarmDescription: monitor lambda action.
+      AlarmName: WatchdogAlarm
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: 1
+      MetricName: Invocations
+      Namespace: AWS/Lambda
+      Period: 900
+      Statistic: Average
+      Threshold: 0.0
+      TreatMissingData: breaching
