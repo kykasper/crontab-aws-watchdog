@@ -20,7 +20,7 @@ function main() {
   log $service_status
   log $service_active_state
 
-  message=$(echo -e $service_active_state\\n$service_status)
+  message=$(echo -e $service_active_state\\n)$service_status
 
   log $(aws sns publish --topic-arn $AWS_SNS_TOPIC_ARN --message "$message" | jq -c)
 
