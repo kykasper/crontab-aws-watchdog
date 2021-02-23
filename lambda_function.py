@@ -1,20 +1,31 @@
-import json
 import os
+import json
+import logging
+
 import boto3
 
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 TOPIC_ARN = os.environ['SNS_TOPIC_ARN']
-subject = 'TestWatchdog'
+SUBJECT = 'Crontab Alert'
 client = boto3.client('sns')
 
 def lambda_handler(event, context):
-    message = event['Records'][0]['Sns']['Message']
-    print("From SNS: " + message)
+    logger.info('event: {}'.format(event))
+    try:
+        message = event['Records'][0]['Sns']['Message']
+        service_active_state, service_status = message.split('\n', 1)
+        logger.info(service_active_state)
 
-    if message != "Running":
-        response = client.publish(
-            TopicArn = TOPIC_ARN,
-            Message = message,
-            Subject = subject,
-        )
-    print(json.dumps(response))
-    return response
+        if service_active_state != "ActiveState=active":
+            response = client.publish(
+                TopicArn = TOPIC_ARN,
+                Message = service_status,
+                Subject = SUBJECT,
+            )
+        logger.info('SNS Result: {}'.format(json.dumps(response)))
+        return response
+    except Exception as e:
+        logger.error('Error: {}'.format(str(e)))
