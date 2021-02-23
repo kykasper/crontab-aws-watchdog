@@ -16,7 +16,7 @@ def lambda_handler(event, context):
     logger.info('event: {}'.format(event))
     try:
         message = event['Records'][0]['Sns']['Message']
-        service_active_state, service_status = message.split('\n', 1)
+        service_active_state, service_status = message.split(maxsplit=1)
         logger.info(service_active_state)
 
         if service_active_state != "ActiveState=active":
