@@ -11,7 +11,7 @@ source ./config.sh
 # #!/bin/bash -
 
 # readonly SERVICE_NAME="hello_world.service"
-# readonly AWS_SNS_TOPIC_ARN="arn:aws:sns:ap-northeast-1:123456789:AlarmNotification"
+# readonly AWS_SNS_TOPIC_ARN="arn:aws:sns:ap-northeast-1:123456789:HeartbeatNotification"
 
 function main() {
   log "Start batch program."
