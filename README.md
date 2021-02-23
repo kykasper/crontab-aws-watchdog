@@ -20,6 +20,11 @@ monitor crontab by aws watchdog.
   - aws-cli
   - jq
 
+Maybe you need to install jq.
+```bash
+$ sudo apt install jq
+```
+
 ## Instructions by AWS console
 
 1. Upload zipped lambda_function.py to S3 bucket
@@ -64,6 +69,7 @@ monitor crontab by aws watchdog.
 
 ## Common Instructions
 1. Create config.sh
+2. Set crontab
 
 ### Create config.sh
 1. Create config.sh like below
@@ -74,4 +80,14 @@ monitor crontab by aws watchdog.
 
 readonly SERVICE_NAME="hello_world.service"
 readonly AWS_SNS_TOPIC_ARN="arn:aws:sns:ap-northeast-1:123456789:HeartbeatNotification"
+```
+
+### Set crontab
+1. Set crontab
+```
+$ crontab -l
+```
+edit crontab by vi or etc...
+```
+*/10 * * * * /home/user/crontab-aws-watchdog/cronjob.sh  > /var/log/crontab-aws-watchdog.log 2>&1
 ```
