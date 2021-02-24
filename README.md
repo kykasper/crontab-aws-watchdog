@@ -37,7 +37,6 @@ $ sudo apt install jq
 3. Upload lambda_function.zip to S3 bucket
 4. Copy S3 URI of lambda_function.zip 
 
-
 ### Edit crontab-aws-watchdog.yml
 1. Edit CodeUri in crontab-aws-watchdog.yml
 
@@ -59,13 +58,49 @@ $ sudo apt install jq
 ## Instructions by AWS CLI
 
 ### Create S3 bucket
+Create S3 bucket. bucket name is grobal unique.
+
+```
+$ aws s3 mb s3://bucket-name
+```
 ### Package crontab-aws-watchdog.yml and Upload zipped lambda_function.py 
+
+Set Enviroment value. UPLOADBUCKETNAME is bucket-name you create.
+
+```
+$ PROJECTNAME=crontab-aws-watchdog
+$ UPLOADBUCKETNAME=crontab-aws-watchdog
+$ MAILADDRESS=foobar@example.com
+```
+
+Package crontab-aws-watchdog.yml
+
+```
+$ aws cloudformation package \
+--template-file crontab-aws-watchdog.yml \
+--s3-bucket $UPLOADBUCKETNAME \
+--output-template-file packaged-crontab-aws-watchdog.yml
+```
+
 ### Create CloudFormation Stack by AWS CLI
+Create CloudFormation Stack by AWS CLI
 
-1. Create S3 bucket
-2. Package crontab-aws-watchdog.yml and Upload zipped lambda_function.py 
-3. Create CloudFormation Stack by AWS CLI
+```
+$ aws cloudformation deploy
+--stack-name $PROJECTNAME
+--region ap-northeast-1
+--capabilities CAPABILITY_NAMED_IAM
+--template-file packaged-crontab-aws-watchdog.yml
+--parameter-overrides NortificationMail=$MAILADDRESS
+```
 
+Message is displayed if deploy is success.
+
+```
+Waiting for changeset to be created..
+Waiting for stack create/update to complete
+Successfully created/updated stack - crontab-aws-watchdog
+```
 
 ## Common Instructions
 1. Create config.sh
