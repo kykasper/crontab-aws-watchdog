@@ -101,5 +101,5 @@ Resources:
       Threshold: 0.0
       TreatMissingData: breaching
       Dimensions:
-        - Name: Lambda_Name
+        - Name: FunctionName
           Value: !Ref JudgeResultLambda
