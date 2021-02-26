@@ -92,11 +92,14 @@ Resources:
         - !Ref AlarmNotification
       AlarmDescription: monitor lambda action.
       AlarmName: WatchdogAlarm
-      ComparisonOperator: LessThanThreshold
+      ComparisonOperator: LessThanOrEqualToThreshold
       EvaluationPeriods: 1
       MetricName: Invocations
       Namespace: AWS/Lambda
-      Period: 900
+      Period: 960
       Statistic: Average
       Threshold: 0.0
       TreatMissingData: breaching
+      Dimensions:
+        - Name: Lambda_Name
+          Value: !Ref JudgeResultLambda
