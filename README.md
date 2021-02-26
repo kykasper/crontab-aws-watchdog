@@ -124,5 +124,5 @@ $ crontab -l
 ```
 edit crontab by vi or etc...
 ```
-*/10 * * * * /home/user/crontab-aws-watchdog/cronjob.sh  > /var/log/crontab-aws-watchdog.log 2>&1
+*/10 * * * * cd ./crontab-aws-watchdog; bash /home/user/crontab-aws-watchdog/cronjob.sh  > /var/log/crontab-aws-watchdog.log 2>&1
 ```
