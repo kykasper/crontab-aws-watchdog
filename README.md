@@ -47,7 +47,7 @@ $ sudo apt install jq
       FunctionName: judge_result
       Role: !GetAtt JudgeResultLambdaRole.Arn
       Runtime: python3.7
-      Timeout: 300
+      Timeout: 360
       Handler: lambda_function.lambda_handler
       CodeUri: s3://crontab-aws-watchdog/lambda_function.zip 
 ```
@@ -124,5 +124,5 @@ $ crontab -l
 ```
 edit crontab by vi or etc...
 ```
-*/10 * * * * cd ./crontab-aws-watchdog; bash /home/user/crontab-aws-watchdog/cronjob.sh  > /var/log/crontab-aws-watchdog.log 2>&1
+*/10 * * * * cd ./crontab-aws-watchdog; bash /home/user/crontab-aws-watchdog/cron-aws-watchdog.sh  > /home/user/crontab-aws-watchdog/crontab-aws-watchdog.log 2>&1
 ```
