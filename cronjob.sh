@@ -7,6 +7,7 @@ function log() {
 }
 
 source ./config.sh
+
 # You must set 'config.sh' like below.
 # #!/bin/bash -
 
@@ -20,9 +21,10 @@ function main() {
   log $service_status
   log $service_active_state
 
-  message=$(echo -e $service_active_state\\n)$service_status
+  message=$service_status
+  subject=$service_active_state
 
-  log $(aws sns publish --topic-arn $AWS_SNS_TOPIC_ARN --message "$message" | jq -c)
+  log $(aws sns publish --topic-arn $AWS_SNS_TOPIC_ARN --message "$message" --subject "$subject" | jq -c)
 
   log "End batch program."
 }
