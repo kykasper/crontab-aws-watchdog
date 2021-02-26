@@ -7,6 +7,7 @@ function log() {
 }
 
 source ./config.sh
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 STATE_FILE="./state.sh"
 
 # You must set 'config.sh' like below.
