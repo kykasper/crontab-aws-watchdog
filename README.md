@@ -86,11 +86,11 @@ $ aws cloudformation package \
 Create CloudFormation Stack by AWS CLI
 
 ```
-$ aws cloudformation deploy
---stack-name $PROJECTNAME
---region ap-northeast-1
---capabilities CAPABILITY_NAMED_IAM
---template-file packaged-crontab-aws-watchdog.yml
+$ aws cloudformation deploy \
+--stack-name $PROJECTNAME \
+--region ap-northeast-1 \
+--capabilities CAPABILITY_NAMED_IAM \
+--template-file packaged-crontab-aws-watchdog.yml \
 --parameter-overrides NortificationMail=$MAILADDRESS
 ```
 

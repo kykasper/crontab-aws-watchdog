@@ -78,12 +78,12 @@ Resources:
   AlarmNotification:  
       Type: AWS::SNS::Topic
       Properties:
-          DisplayName: AlarmNotification
+          DisplayName: AlarmNotificationD
           Subscription:
               - Endpoint:
                   Ref: NortificationMail
                 Protocol: email
-          TopicName: AlarmNotification
+          TopicName: AlarmNotificationT
   
   WatchdogAlarm:
     Type: AWS::CloudWatch::Alarm

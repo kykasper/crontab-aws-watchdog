@@ -23,7 +23,7 @@ function main() {
   log $service_active_state
 
   if [[ ! -e $STATE_FILE ]]; then
-    mkdir $STATE_FILE
+    touch $STATE_FILE
   fi
   before_service_state=$(cat $STATE_FILE)
   echo $service_active_state > $STATE_FILE
@@ -32,7 +32,8 @@ function main() {
 
   if [[ $service_active_state = $before_service_state ]]; then
     subject="ServiceActiveStateDontChange"
-
+  fi
+  log $subject
   message=$service_status
 
   log $(aws sns publish --topic-arn $AWS_SNS_TOPIC_ARN --message "$message" --subject "$subject" | jq -c)
