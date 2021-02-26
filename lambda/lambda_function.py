@@ -20,7 +20,7 @@ def lambda_handler(event, context):
         service_active_state = event['Records'][0]['Sns']['Subject']
         logger.info(service_active_state)
 
-        if service_active_state != "ActiveState=active":
+        if service_active_state != "ServiceActiveStateDontChange":
             response = client.publish(
                 TopicArn = TOPIC_ARN,
                 Message = service_status,

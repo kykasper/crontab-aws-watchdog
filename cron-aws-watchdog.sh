@@ -7,6 +7,7 @@ function log() {
 }
 
 source ./config.sh
+STATE_FILE="./state.sh"
 
 # You must set 'config.sh' like below.
 # #!/bin/bash -
@@ -21,8 +22,18 @@ function main() {
   log $service_status
   log $service_active_state
 
-  message=$service_status
+  if [[ ! -e $STATE_FILE ]]; then
+    mkdir $STATE_FILE
+  fi
+  before_service_state=$(cat $STATE_FILE)
+  echo $service_active_state > $STATE_FILE
+
   subject=$service_active_state
+
+  if [[ $service_active_state = $before_service_state ]]; then
+    subject="ServiceActiveStateDontChange"
+
+  message=$service_status
 
   log $(aws sns publish --topic-arn $AWS_SNS_TOPIC_ARN --message "$message" --subject "$subject" | jq -c)
 
